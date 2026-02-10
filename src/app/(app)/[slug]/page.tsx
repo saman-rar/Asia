@@ -1,15 +1,17 @@
 import type { Metadata } from 'next'
 
-import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { RenderHero } from '@/heros/RenderHero'
+import { homeStaticData } from '@/endpoints/seed/home-static'
 import { generateMeta } from '@/utilities/generateMeta'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
-import { homeStaticData } from '@/endpoints/seed/home-static'
-import React from 'react'
+import { getPayload } from 'payload'
 
+import { RenderBlocks } from '@/blocks/RenderBlocks'
+import ProductsCarousel from '@/components/product/ProductsCarousel'
 import type { Page } from '@/payload-types'
+import { ChevronLeft, Percent } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 export async function generateStaticParams() {
@@ -43,6 +45,13 @@ type Args = {
 }
 
 export default async function Page({ params }: Args) {
+  const payload = await getPayload({ config: configPromise })
+  const { docs } = await payload.find({
+    collection: 'products',
+  })
+
+  console.log(docs)
+
   const { slug = 'home' } = await params
   const url = '/' + slug
 
@@ -62,8 +71,50 @@ export default async function Page({ params }: Args) {
   const { hero, layout } = page
 
   return (
-    <article className="pt-16 pb-24">
-      <RenderHero {...hero} />
+    <article className="pt-16 pb-24 space-y-5">
+      {/* Products Grid */}
+      <div className="grid grid-cols-2 grid-rows-2 gap-5 w-full aspect-2/1 container">
+        <div className="relative rounded-2xl overflow-hidden">
+          <Image src="/grid.png" fill alt="grid" className="object-cover" />
+        </div>
+        <div className="relative rounded-2xl overflow-hidden">
+          <Image src="/grid.png" fill alt="grid" className="object-cover" />
+        </div>
+        <div className="relative rounded-2xl overflow-hidden">
+          <Image src="/grid.png" fill alt="grid" className="object-cover" />
+        </div>
+        <div className="relative rounded-2xl overflow-hidden">
+          <Image src="/grid.png" fill alt="grid" className="object-cover" />
+        </div>
+      </div>
+
+      {/* Special Offer */}
+      <div className="relative w-full bg-primary py-5 px-4 text-white">
+        {/* Header */}
+        <div className="flex justify-between">
+          <div className="flex items-center gap-3">
+            <h2 className="flex gap-2 font-bold">
+              <Percent strokeWidth={3} />
+              <span className="text-xl md:text-2xl">فروش شگفت انگیز</span>
+            </h2>
+            {/* <FlipClock
+              dir="rtl"
+              size="sm"
+              variant="secondary"
+              showDays="never"
+              className="hidden md:flex"
+            />
+            <MobileTimer /> */}
+          </div>
+          <Link href="/products/off" className="flex items-center gap-0.5 text-sm">
+            همه <ChevronLeft size={16} />
+          </Link>
+        </div>
+        {/* Main */}
+        <div className="w-full bg-red-200">
+          <ProductsCarousel />
+        </div>
+      </div>
       <RenderBlocks blocks={layout} />
     </article>
   )

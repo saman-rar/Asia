@@ -1,4 +1,4 @@
-import type { Product, CarouselBlock as CarouselBlockProps } from '@/payload-types'
+import type { CarouselBlock as CarouselBlockProps, Product } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { DefaultDocumentIDType, getPayload } from 'payload'

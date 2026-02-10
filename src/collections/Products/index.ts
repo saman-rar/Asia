@@ -1,7 +1,6 @@
 import { CallToAction } from '@/blocks/CallToAction/config'
 import { Content } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
-import { slugField } from 'payload'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { CollectionOverride } from '@payloadcms/plugin-ecommerce/types'
 import {
@@ -18,13 +17,20 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
-import { DefaultDocumentIDType, Where } from 'payload'
+import { DefaultDocumentIDType, slugField, Where } from 'payload'
 
 export const ProductsCollection: CollectionOverride = ({ defaultCollection }) => ({
   ...defaultCollection,
   admin: {
     ...defaultCollection?.admin,
-    defaultColumns: ['title', 'enableVariants', '_status', 'variants.variants'],
+    defaultColumns: [
+      'title',
+      'enableVariants',
+      'price',
+      'isFeatured',
+      '_status',
+      'variants.variants',
+    ],
     livePreview: {
       url: ({ data, req }) =>
         generatePreviewPath({
@@ -49,12 +55,29 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     variants: true,
     enableVariants: true,
     gallery: true,
-    priceInUSD: true,
+    price: true,
     inventory: true,
+    isFeatured: true,
     meta: true,
   },
   fields: [
     { name: 'title', type: 'text', required: true },
+    {
+      name: 'price',
+      type: 'number',
+      required: true,
+      admin: {
+        description: 'قیمت محصول به تومان یا واحد دلخواه شما',
+      },
+    },
+    {
+      name: 'isFeatured',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description: 'محصول شاخص برای نمایش در صفحه اصلی',
+      },
+    },
     {
       type: 'tabs',
       tabs: [
@@ -131,7 +154,6 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 },
               ],
             },
-
             {
               name: 'layout',
               type: 'blocks',
@@ -155,7 +177,6 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                   }
                 }
 
-                // ID comes back as undefined during seeding so we need to handle that case
                 return {
                   id: {
                     exists: true,
@@ -183,13 +204,9 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             MetaImageField({
               relationTo: 'media',
             }),
-
             MetaDescriptionField({}),
             PreviewField({
-              // if the `generateUrl` function is configured
               hasGenerateFn: true,
-
-              // field paths to match the target field for data
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
             }),
