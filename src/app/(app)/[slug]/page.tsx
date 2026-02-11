@@ -7,6 +7,7 @@ import { draftMode } from 'next/headers'
 import { getPayload } from 'payload'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
+import FeatuedBrands from '@/components/FeatuedBrands'
 import HeroCarousel from '@/components/HeroCarousel'
 import ProductsCarousel from '@/components/product/ProductsCarousel'
 import type { Page } from '@/payload-types'
@@ -73,21 +74,11 @@ export default async function Page({ params }: Args) {
 
   return (
     <article className="pt-16 pb-24 space-y-5">
-      {/* Products Grid */}
-      <div className="grid grid-cols-2 grid-rows-2 gap-5 w-full aspect-2/1 container">
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
+      {/* Carousel */}
+      <div className="w-full">
+        <HeroCarousel />
       </div>
+
       <div className="container">
         {/* Special Offer */}
         <div className="relative w-full bg-primary dark:bg-white/7 py-5 px-4 text-white rounded-2xl">
@@ -112,9 +103,26 @@ export default async function Page({ params }: Args) {
           </div>
         </div>
       </div>
-      {/* Carousel */}
-      <div className="w-full">
-        <HeroCarousel />
+
+      {/* Products Grid */}
+      <div className="grid grid-cols-2 grid-rows-2 gap-5 w-full aspect-2/1 container">
+        <div className="relative rounded-2xl overflow-hidden">
+          <Image src="/grid.png" fill alt="grid" className="object-cover" />
+        </div>
+        <div className="relative rounded-2xl overflow-hidden">
+          <Image src="/grid.png" fill alt="grid" className="object-cover" />
+        </div>
+        <div className="relative rounded-2xl overflow-hidden">
+          <Image src="/grid.png" fill alt="grid" className="object-cover" />
+        </div>
+        <div className="relative rounded-2xl overflow-hidden">
+          <Image src="/grid.png" fill alt="grid" className="object-cover" />
+        </div>
+      </div>
+
+      {/* Featured Brands */}
+      <div>
+        <FeatuedBrands />
       </div>
       <RenderBlocks blocks={layout} />
     </article>
