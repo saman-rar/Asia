@@ -7,6 +7,7 @@ import { draftMode } from 'next/headers'
 import { getPayload } from 'payload'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
+import HeroCarousel from '@/components/HeroCarousel'
 import ProductsCarousel from '@/components/product/ProductsCarousel'
 import type { Page } from '@/payload-types'
 import { ChevronLeft, Percent } from 'lucide-react'
@@ -87,33 +88,33 @@ export default async function Page({ params }: Args) {
           <Image src="/grid.png" fill alt="grid" className="object-cover" />
         </div>
       </div>
-
-      {/* Special Offer */}
-      <div className="relative w-full bg-primary py-5 px-4 text-white">
-        {/* Header */}
-        <div className="flex justify-between">
-          <div className="flex items-center gap-3">
-            <h2 className="flex gap-2 font-bold">
-              <Percent strokeWidth={3} />
-              <span className="text-xl md:text-2xl">فروش شگفت انگیز</span>
-            </h2>
-            {/* <FlipClock
-              dir="rtl"
-              size="sm"
-              variant="secondary"
-              showDays="never"
-              className="hidden md:flex"
-            />
-            <MobileTimer /> */}
+      <div className="container">
+        {/* Special Offer */}
+        <div className="relative w-full bg-primary dark:bg-white/7 py-5 px-4 text-white rounded-2xl">
+          {/* Header */}
+          <div className="flex justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="flex gap-2 font-bold dark:text-sky-500">
+                <Percent strokeWidth={3} />
+                <span className="text-xl md:text-2xl">فروش شگفت انگیز</span>
+              </h2>
+            </div>
+            <Link
+              href="/products/off"
+              className="flex items-center gap-0.5 text-sm text-white/80 dark:text-sky-700 transition duration-150 ease-in hover:text-white dark:hover:text-sky-500"
+            >
+              همه <ChevronLeft size={16} />
+            </Link>
           </div>
-          <Link href="/products/off" className="flex items-center gap-0.5 text-sm">
-            همه <ChevronLeft size={16} />
-          </Link>
+          {/* Main */}
+          <div className="w-full flex justify-center">
+            <ProductsCarousel />
+          </div>
         </div>
-        {/* Main */}
-        <div className="w-full bg-red-200">
-          <ProductsCarousel />
-        </div>
+      </div>
+      {/* Carousel */}
+      <div className="w-full">
+        <HeroCarousel />
       </div>
       <RenderBlocks blocks={layout} />
     </article>

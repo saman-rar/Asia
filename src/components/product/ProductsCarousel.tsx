@@ -1,30 +1,43 @@
-import { Card, CardContent } from '@/components/ui/card'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
+import configPromise from '@payload-config'
+import { ArrowLeftCircle } from 'lucide-react'
+import Link from 'next/link'
+import { getPayload } from 'payload'
+import { ProductItem } from '../ProductItem'
+import { Card } from '../ui/card'
+import { ScrollArea, ScrollBar } from '../ui/scroll-area'
 
-export default function ProductsCarousel() {
+export default async function ProductsCarousel() {
+  const payload = await getPayload({ config: configPromise })
+  const { docs } = await payload.find({
+    collection: 'products',
+  })
+
   return (
-    <Carousel dir="ltr" className="w-full max-w-[12rem] sm:max-w-xs md:max-w-sm">
-      <CarouselContent className="-ml-1">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index} className="basis-1/2 pl-1 lg:basis-1/3">
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-2xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
+    <ScrollArea className="w-full rounded-md whitespace-nowrap">
+      <div className="flex w-max space-x-1 p-4">
+        {docs.map((product) => (
+          <ProductItem
+            key={product.id}
+            product={product}
+            className="rounded-none first:rounded-tr-xl first:rounded-br-xl"
+          />
         ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
+        <Card className="py-0 px-0 overflow-hidden rounded-none rounded-tl-xl rounded-bl-xl">
+          <div className="flex h-full w-37 aspect-square">
+            <Link
+              href="/"
+              className="w-full h-full flex flex-col justify-center items-center bg-chart-1 gap-7 group text-card-foreground"
+            >
+              <ArrowLeftCircle
+                strokeWidth={1.25}
+                className="scale-300 group-hover:scale-310 transition duration-150 ease-in"
+              />
+              <span>مشاهده همه</span>
+            </Link>
+          </div>
+        </Card>
+      </div>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   )
 }

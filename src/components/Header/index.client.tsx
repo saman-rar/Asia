@@ -47,9 +47,9 @@ export function HeaderClient({ header }: Props) {
   return (
     <div
       className={cn(
-        'sticky top-0 right-0 left-0 bg-background transition-all duration-300 ease-in-out',
+        'sticky top-0 right-0 left-0 bg-background transition-all duration-300 ease-in-out z-20',
         {
-          'border-b': !showCategories,
+          'border-b border-gray-300 dark:border-white/20 shadow-md pb-1': !showCategories,
         },
       )}
     >
@@ -92,13 +92,26 @@ export function HeaderClient({ header }: Props) {
                 <Link
                   className={buttonVariants({
                     variant: 'secondary',
-                    className: 'h-12 hidden! md:block!',
+                    className:
+                      'h-12 hidden! lg:flex! transition! duration-150! ease-in! group hover:bg-primary! text-primary! hover:text-white! dark:hover:text-black!',
                   })}
                   href="/signup"
                 >
-                  <div className="items-center gap-3">
-                    <LogIn />
+                  <div className="flex items-center justify-center gap-3">
+                    <LogIn className="scale-120" />
                     <span>ورود | ثبت نام</span>
+                  </div>
+                </Link>
+                <Link
+                  className={buttonVariants({
+                    variant: 'secondary',
+                    className:
+                      'h-12 hidden! md:flex! lg:hidden! transition! duration-150! ease-in! group hover:bg-primary! text-primary! hover:text-white! dark:hover:text-black!',
+                  })}
+                  href="/signup"
+                >
+                  <div className="flex items-center justify-center gap-3">
+                    <LogIn className="scale-150" />
                   </div>
                 </Link>
                 <Button
@@ -123,7 +136,7 @@ export function HeaderClient({ header }: Props) {
       {/* categories */}
       <ul
         className={cn(
-          'absolute inset-x-0 top-17 transition-all duration-300 ease-in-out will-change-transform border-b bg-background',
+          'absolute inset-x-0 top-17 transition-all duration-300 ease-in-out will-change-transform border-b border-gray-300 dark:border-white/20 shadow-md bg-background',
           {
             '-translate-y-10 opacity-0 pointer-events-none': !showCategories,
             'translate-y-0 opacity-100': showCategories,

@@ -44,7 +44,7 @@ export function CartModal() {
         <OpenCartButton quantity={totalQuantity} />
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col" side="left">
+      <SheetContent className="flex flex-col">
         <SheetHeader>
           <SheetTitle>My Cart</SheetTitle>
 

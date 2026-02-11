@@ -15,36 +15,36 @@ export const Providers: React.FC<{
     <ThemeProvider>
       <AuthProvider>
         <HeaderThemeProvider>
-          <DirectionProvider dir="rtl" direction="rtl">
-            <SonnerProvider />
-            <EcommerceProvider
-              enableVariants={true}
-              api={{
-                cartsFetchQuery: {
-                  depth: 2,
-                  populate: {
-                    products: {
-                      slug: true,
-                      title: true,
-                      gallery: true,
-                      inventory: true,
-                    },
-                    variants: {
-                      title: true,
-                      inventory: true,
-                    },
+          <SonnerProvider />
+          <EcommerceProvider
+            enableVariants={true}
+            api={{
+              cartsFetchQuery: {
+                depth: 2,
+                populate: {
+                  products: {
+                    slug: true,
+                    title: true,
+                    gallery: true,
+                    inventory: true,
+                  },
+                  variants: {
+                    title: true,
+                    inventory: true,
                   },
                 },
-              }}
-              paymentMethods={[
-                stripeAdapterClient({
-                  publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
-                }),
-              ]}
-            >
+              },
+            }}
+            paymentMethods={[
+              stripeAdapterClient({
+                publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
+              }),
+            ]}
+          >
+            <DirectionProvider dir="rtl" direction="rtl">
               {children}
-            </EcommerceProvider>
-          </DirectionProvider>
+            </DirectionProvider>
+          </EcommerceProvider>
         </HeaderThemeProvider>
       </AuthProvider>
     </ThemeProvider>

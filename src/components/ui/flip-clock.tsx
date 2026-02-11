@@ -5,21 +5,21 @@ import { cva, VariantProps } from 'class-variance-authority'
 import { FC, HTMLAttributes, memo, ReactNode, useEffect, useState } from 'react'
 
 const flipUnitVariants = cva(
-  'relative subpixel-antialiased perspective-[1000px] rounded-md overflow-hidden',
+  "relative subpixel-antialiased perspective-[1000px] rounded-md overflow-hidden",
   {
     variants: {
       size: {
-        sm: 'w-10 min-w-10 h-14 text-3xl', // Small (Compact UI)
-        md: 'w-14 min-w-14 h-20 text-5xl', // Medium (Standard sidebar/header)
-        lg: 'w-17 min-w-17 h-24 text-6xl', // Large (Focus/Hero)
-        xl: 'w-22 min-w-22 h-32 text-8xl', // Extra Large (Dashboard/Landing)
+        sm: "w-10 min-w-10 h-14 text-3xl", // Small (Compact UI)
+        md: "w-14 min-w-14 h-20 text-5xl", // Medium (Standard sidebar/header)
+        lg: "w-17 min-w-17 h-24 text-6xl", // Large (Focus/Hero)
+        xl: "w-22 min-w-22 h-32 text-8xl", // Extra Large (Dashboard/Landing)
       },
       variant: {
-        default: 'bg-primary text-primary-foreground',
-        secondary: 'bg-secondary text-secondary-foreground',
-        destructive: 'bg-destructive text-destructive-foreground',
-        outline: 'border border-input bg-background text-foreground',
-        muted: 'bg-muted text-muted-foreground',
+        default: "bg-primary text-primary-foreground",
+        secondary: "bg-secondary text-secondary-foreground",
+        destructive: "bg-destructive text-destructive-foreground",
+        outline: "border border-input bg-background text-foreground",
+        muted: "bg-muted text-muted-foreground",
       },
     },
     defaultVariants: {
@@ -60,12 +60,12 @@ const FlipUnit: FC<FlipUnitProps> = memo(function FlipUnit({
   return (
     <div className={cn(flipUnitVariants({ size, variant }), className)}>
       {/* 1. Background Top (The NEW digit waiting) */}
-      <div className={cn(commonCardStyle, 'rounded-t-lg top-0')}>
+      <div className={cn(commonCardStyle, "rounded-t-lg top-0")}>
         <DigitSpan position="top">{digit}</DigitSpan>
       </div>
 
       {/* 2. Background Bottom (The OLD digit staying) */}
-      <div className={cn(commonCardStyle, 'rounded-b-lg translate-y-full')}>
+      <div className={cn(commonCardStyle, "rounded-b-lg translate-y-full")}>
         <DigitSpan position="bottom">{prevDigit}</DigitSpan>
       </div>
 
@@ -73,8 +73,8 @@ const FlipUnit: FC<FlipUnitProps> = memo(function FlipUnit({
       <div
         className={cn(
           commonCardStyle,
-          'z-20 origin-bottom backface-hidden rounded-t-lg',
-          flipping && 'animate-flip-top',
+          "z-20 origin-bottom backface-hidden rounded-t-lg",
+          flipping && "animate-flip-top",
         )}
       >
         <DigitSpan position="top">{prevDigit}</DigitSpan>
@@ -84,8 +84,8 @@ const FlipUnit: FC<FlipUnitProps> = memo(function FlipUnit({
       <div
         className={cn(
           commonCardStyle,
-          'z-10 origin-top backface-hidden rounded-b-lg translate-y-full',
-          flipping && 'animate-flip-bottom',
+          "z-10 origin-top backface-hidden rounded-b-lg translate-y-full",
+          flipping && "animate-flip-bottom",
         )}
         style={{ transform: 'rotateX(90deg)' }}
       >
@@ -107,9 +107,9 @@ function DigitSpan({ children, position }: DigitSpanProps) {
   return (
     <span
       className={cn(
-        'absolute start-0 end-0 w-full flex items-center justify-center',
+        "absolute start-0 end-0 w-full flex items-center justify-center",
         // The span should be the full height of the PARENT FlipUnit (200% of the half-card)
-        'h-[200%]',
+        "h-[200%]",
       )}
       style={{
         // If it's the top half, align the full span to the top
@@ -122,20 +122,20 @@ function DigitSpan({ children, position }: DigitSpanProps) {
   )
 }
 
-const flipClockVariants = cva('relative flex justify-center items-center font-mono font-medium', {
+const flipClockVariants = cva("relative flex justify-center items-center font-mono font-medium", {
   variants: {
     size: {
-      sm: 'text-3xl space-x-1 rtl:space-x-reverse',
-      md: 'text-5xl space-x-2 rtl:space-x-reverse',
-      lg: 'text-6xl space-x-2 rtl:space-x-reverse',
-      xl: 'text-8xl space-x-3 rtl:space-x-reverse',
+      sm: "text-3xl space-x-1 rtl:space-x-reverse rtl:space-x-reverse",
+      md: "text-5xl space-x-2 rtl:space-x-reverse rtl:space-x-reverse",
+      lg: "text-6xl space-x-2 rtl:space-x-reverse rtl:space-x-reverse",
+      xl: "text-8xl space-x-3 rtl:space-x-reverse rtl:space-x-reverse",
     },
     variant: {
-      default: '',
-      secondary: '',
-      destructive: '',
-      outline: '',
-      muted: '',
+      default: "",
+      secondary: "",
+      destructive: "",
+      outline: "",
+      muted: "",
     },
   },
   defaultVariants: {
@@ -169,7 +169,7 @@ const heightMap: Record<FlipClockSize, string> = {
 
 function ClockSeparator({ size }: { size?: FlipClockSize }) {
   return (
-    <span className={cn('text-center -translate-y-[8%]', size ? heightMap[size] : heightMap['md'])}>
+    <span className={cn("text-center -translate-y-[8%]", size ? heightMap[size] : heightMap['md'])}>
       :
     </span>
   )

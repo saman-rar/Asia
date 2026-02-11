@@ -1,16 +1,15 @@
 import { Media } from '@/components/Media'
-import { OrderStatus } from '@/components/OrderStatus'
-import { Price } from '@/components/Price'
-import { Button } from '@/components/ui/button'
-import { Media as MediaType, Order, Product, Variant } from '@/payload-types'
-import { formatDateTime } from '@/utilities/formatDateTime'
-import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import { Product, Variant } from '@/payload-types'
+import { Badge } from '../ui/badge'
+import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card'
 
 type Props = {
   product: Product
   style?: 'compact' | 'default'
   variant?: Variant
   quantity?: number
+  className?: string
   /**
    * Force all formatting to a particular currency.
    */
@@ -23,6 +22,7 @@ export const ProductItem: React.FC<Props> = ({
   quantity,
   variant,
   currencyCode,
+  className,
 }) => {
   const { title } = product
 
@@ -59,46 +59,26 @@ export const ProductItem: React.FC<Props> = ({
   const itemURL = `/products/${product.slug}${variant ? `?variant=${variant.id}` : ''}`
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex items-stretch justify-stretch h-20 w-20 p-2 rounded-lg border">
+    <Card className={cn('pt-0 pb-1 px-0 overflow-hidden', className)}>
+      <div className="flex items-stretch justify-stretch h-30 aspect-square">
         <div className="relative w-full h-full">
           {image && typeof image !== 'string' && (
-            <Media className="" fill imgClassName="rounded-lg object-cover" resource={image} />
+            <Media className="" fill imgClassName="object-cover" resource={image} />
           )}
         </div>
       </div>
-      <div className="flex grow justify-between items-center">
-        <div className="flex flex-col gap-1">
-          <p className="font-medium text-lg">
-            <Link href={itemURL}>{title}</Link>
-          </p>
-          {variant && (
-            <p className="text-sm font-mono text-primary/50 tracking-widest">
-              {variant.options
-                ?.map((option) => {
-                  if (typeof option === 'object') return option.label
-                  return null
-                })
-                .join(', ')}
-            </p>
-          )}
-          <div>
-            {'x'}
-            {quantity}
+      <CardHeader className="px-2">
+        <CardTitle className="text-sm">{product.meta?.title}</CardTitle>
+        <CardDescription className="space-y-2">
+          <div className="flex items-center gap-1">
+            <Badge className="bg-blue-600 text-white flex pt-1.5">50%</Badge>
+            <span className="text-muted-foreground text-xs line-through pt-1.5">
+              {product.price}
+            </span>
           </div>
-        </div>
-
-        {itemPrice && quantity && (
-          <div className="text-right">
-            <p className="font-medium text-lg">Subtotal</p>
-            <Price
-              className="font-mono text-primary/50 text-sm"
-              amount={itemPrice * quantity}
-              currencyCode={currencyCode}
-            />
-          </div>
-        )}
-      </div>
-    </div>
+          <div className="text-md font-bold text-card-foreground">{product.price} تومان</div>
+        </CardDescription>
+      </CardHeader>
+    </Card>
   )
 }
