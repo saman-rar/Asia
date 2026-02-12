@@ -14,7 +14,7 @@ export default async function ProductsCarousel() {
 
   return (
     <ScrollArea className="w-full rounded-md whitespace-nowrap">
-      <div className="flex w-max space-x-1 p-4">
+      <div className="flex w-max space-x-1 py-6">
         {docs.map((product) => (
           <ProductItem
             key={product.id}
@@ -26,7 +26,7 @@ export default async function ProductsCarousel() {
           <div className="flex h-full w-37 aspect-square">
             <Link
               href="/"
-              className="w-full h-full flex flex-col justify-center items-center bg-chart-1 gap-7 group text-card-foreground"
+              className="w-full h-full flex flex-col justify-center items-center gap-7 group text-card-foreground"
             >
               <ArrowLeftCircle
                 strokeWidth={1.25}

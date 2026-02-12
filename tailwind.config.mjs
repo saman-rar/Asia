@@ -75,6 +75,7 @@ export default {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
+          light: '#0085C8',
         },
         ring: 'hsl(var(--ring))',
         secondary: {

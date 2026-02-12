@@ -73,26 +73,26 @@ export default async function Page({ params }: Args) {
   const { hero, layout } = page
 
   return (
-    <article className="pt-16 pb-24 space-y-5">
+    <article className="pt-16 pb-24 space-y-7">
       {/* Carousel */}
       <div className="w-full">
         <HeroCarousel />
       </div>
 
+      {/* Special Offer */}
       <div className="container">
-        {/* Special Offer */}
-        <div className="relative w-full bg-primary dark:bg-white/7 py-5 px-4 text-white rounded-2xl">
+        <div className="relative w-full bg-primary-light py-5 px-4 text-white rounded-2xl">
           {/* Header */}
           <div className="flex justify-between">
             <div className="flex items-center gap-3">
-              <h2 className="flex gap-2 font-bold dark:text-sky-500">
+              <h2 className="flex gap-2 font-bold">
                 <Percent strokeWidth={3} />
                 <span className="text-xl md:text-2xl">فروش شگفت انگیز</span>
               </h2>
             </div>
             <Link
               href="/products/off"
-              className="flex items-center gap-0.5 text-sm text-white/80 dark:text-sky-700 transition duration-150 ease-in hover:text-white dark:hover:text-sky-500"
+              className="flex items-center gap-0.5 text-sm text-white/80  transition duration-150 ease-in hover:text-white"
             >
               همه <ChevronLeft size={16} />
             </Link>
@@ -121,8 +121,78 @@ export default async function Page({ params }: Args) {
       </div>
 
       {/* Featured Brands */}
-      <div>
+      <div className="container">
         <FeatuedBrands />
+      </div>
+
+      {/* Sperator */}
+      <div className="my-12 w-full h-3 bg-border" />
+
+      {/* Products */}
+      <div className="bg-accent dark:bg-card container rounded-2xl">
+        {/* Smartphones */}
+        <div className="relative w-full py-5 px-4">
+          {/* Header */}
+          <div className="flex justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="flex gap-2 font-bold dark:text-sky-500">
+                <span className="text-xl md:text-2xl">محبوب ترین موبایل ها</span>
+              </h2>
+            </div>
+            <Link
+              href="/products/off"
+              className="flex items-center gap-0.5 text-sm text-black/70 dark:text-sky-700 transition duration-150 ease-in hover:text-black dark:hover:text-sky-500"
+            >
+              همه <ChevronLeft size={16} />
+            </Link>
+          </div>
+          {/* Main */}
+          <div className="w-full flex justify-center">
+            <ProductsCarousel />
+          </div>
+        </div>
+        {/* Speakers */}
+        <div className="relative w-full py-5 px-4">
+          {/* Header */}
+          <div className="flex justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="flex gap-2 font-bold dark:text-sky-500">
+                <span className="text-xl md:text-2xl">محبوب ترین اسپیکر ها</span>
+              </h2>
+            </div>
+            <Link
+              href="/products/off"
+              className="flex items-center gap-0.5 text-sm text-black/70 dark:text-sky-700 transition duration-150 ease-in hover:text-black dark:hover:text-sky-500"
+            >
+              همه <ChevronLeft size={16} />
+            </Link>
+          </div>
+          {/* Main */}
+          <div className="w-full flex justify-center">
+            <ProductsCarousel />
+          </div>
+        </div>
+        {/* Handsfree */}
+        <div className="relative w-full py-5 px-4">
+          {/* Header */}
+          <div className="flex justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="flex gap-2 font-bold dark:text-sky-500">
+                <span className="text-xl md:text-2xl">محبوب ترین هندزفری ها</span>
+              </h2>
+            </div>
+            <Link
+              href="/products/off"
+              className="flex items-center gap-0.5 text-sm text-black/70 dark:text-sky-700 transition duration-150 ease-in hover:text-black dark:hover:text-sky-500"
+            >
+              همه <ChevronLeft size={16} />
+            </Link>
+          </div>
+          {/* Main */}
+          <div className="w-full flex justify-center">
+            <ProductsCarousel />
+          </div>
+        </div>
       </div>
       <RenderBlocks blocks={layout} />
     </article>
