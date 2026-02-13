@@ -18,7 +18,32 @@ type Props = {
   header: Header
 }
 
-const categories = ['همه', 'موبایل', 'اسپیکر', 'هندزفری', 'قاب و گلس']
+const categories: { name: string; href: string }[] = [
+  {
+    name: 'صفحه اصلی',
+    href: '/home',
+  },
+  {
+    name: 'موبایل',
+    href: '/mobile',
+  },
+  {
+    name: 'اسپیکر',
+    href: '/speaker',
+  },
+  {
+    name: 'هندزفری',
+    href: '/handsfree',
+  },
+  {
+    name: 'قاب',
+    href: '/case',
+  },
+  {
+    name: 'گلس',
+    href: '/glass',
+  },
+]
 
 export function HeaderClient({ header }: Props) {
   const [showCategories, setShowCategories] = useState(true)
@@ -26,6 +51,8 @@ export function HeaderClient({ header }: Props) {
   const { theme, setTheme } = useTheme()
   const menu = header.navItems || []
   const pathname = usePathname()
+
+  const activeCategory = pathname.split('/').filter(Boolean)[0] || 'home'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -145,15 +172,17 @@ export function HeaderClient({ header }: Props) {
       >
         <div className="container flex md:gap-5 pt-2">
           {categories.map((category) => (
-            <li key={category}>
+            <li key={category.name}>
               <Link
-                href="/"
+                href={category.href}
                 className={buttonVariants({
                   variant: 'nav',
-                  className: 'navLink text-muted-foreground!',
+                  className: cn('navLink text-muted-foreground!', {
+                    active: category.href === `/${activeCategory}`,
+                  }),
                 })}
               >
-                {category}
+                {category.name}
               </Link>
             </li>
           ))}
