@@ -32,12 +32,20 @@ const categories: { name: string; href: string }[] = [
     href: '/speaker',
   },
   {
+    name: 'ساعت هوشمند',
+    href: '/smart-watch',
+  },
+  {
     name: 'هندزفری',
     href: '/handsfree',
   },
   {
+    name: 'هدفون و هدست',
+    href: '/headphone',
+  },
+  {
     name: 'قاب',
-    href: '/case',
+    href: '/cover',
   },
   {
     name: 'گلس',
