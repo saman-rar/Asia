@@ -27,7 +27,7 @@ const brands = [
   },
 ]
 
-const storages = [
+const type = [
   {
     label: 'رومیزی',
     value: 'desktop',
@@ -102,14 +102,14 @@ const SpeakerFilters = () => {
           <AccordionTrigger>نوع اسپیکر</AccordionTrigger>
           <AccordionContent className="h-auto">
             <div className="w-full px-3">
-              {storages.map((storage) => (
+              {type.map((t) => (
                 <Link
                   href="/mobile"
-                  key={storage.value}
+                  key={t.value}
                   className="flex gap-2 items-center border-b last:border-none py-5 no-underline!"
                 >
                   <Checkbox />
-                  <span>{storage.label}</span>
+                  <span>{t.label}</span>
                 </Link>
               ))}
             </div>
