@@ -428,7 +428,7 @@ export interface VariantType {
 export interface Variant {
   id: number;
   /**
-   * نامی را برای نمایش این نوع خاص از محصول انتخاب شده وارد کنید برای مثال گوشی موبایل A56 رنگ آبی گارانتی آسیا
+   * اطلاعات تنوع به اخر نام محصول اضافه خواهند شد لازم نیست چیزی اینجا وارد کنید
    */
   title?: string | null;
   product: number | Product;
@@ -436,6 +436,19 @@ export interface Variant {
   inventory?: number | null;
   priceInIRREnabled?: boolean | null;
   priceInIRR?: number | null;
+  /**
+   * اگر این تنوع قیمت متفاوتی با قیمت اصلی دارد فعال کنید اگرنه قیمت اصلی برای این تنوع اعمال خواهد شد
+   */
+  enablePrice?: boolean | null;
+  /**
+   * قیمت این تنوع محصول به تومان
+   */
+  price?: number | null;
+  isOff?: boolean | null;
+  /**
+   * فقط زمانی نمایش داده می‌شود که این تنوع تخفیف داشته باشد
+   */
+  discountedPrice?: number | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -1134,6 +1147,10 @@ export interface VariantsSelect<T extends boolean = true> {
   inventory?: T;
   priceInIRREnabled?: T;
   priceInIRR?: T;
+  enablePrice?: T;
+  price?: T;
+  isOff?: T;
+  discountedPrice?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
