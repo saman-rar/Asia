@@ -13,11 +13,14 @@ import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess'
 import { isAdmin } from '@/access/isAdmin'
 import { isDocumentOwner } from '@/access/isDocumentOwner'
 import { ProductsCollection } from '@/collections/Products'
+import { Variants } from '@/collections/Variants'
 import { Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 
 const generateTitle: GenerateTitle<Product> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Ecommerce Template` : 'Payload Ecommerce Template'
+  return doc?.title
+    ? `${doc.title} | فروشگاه موبایل و لوازم جانبی آسیا`
+    : 'فروشگاه موبایل و لوازم جانبی آسیا'
 }
 
 const generateURL: GenerateURL<Product> = ({ doc }) => {
@@ -66,6 +69,17 @@ export const plugins: Plugin[] = [
     },
   }),
   ecommercePlugin({
+    currencies: {
+      defaultCurrency: 'IRR',
+      supportedCurrencies: [
+        {
+          code: 'IRR',
+          decimals: 0,
+          label: 'تومان',
+          symbol: 'تومان',
+        },
+      ],
+    },
     access: {
       adminOnlyFieldAccess,
       adminOrPublishedStatus,
@@ -87,6 +101,9 @@ export const plugins: Plugin[] = [
     },
     products: {
       productsCollectionOverride: ProductsCollection,
+      variants: {
+        variantsCollectionOverride: Variants,
+      },
     },
   }),
 ]

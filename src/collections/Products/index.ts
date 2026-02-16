@@ -1,6 +1,3 @@
-import { CallToAction } from '@/blocks/CallToAction/config'
-import { Content } from '@/blocks/Content/config'
-import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { CollectionOverride } from '@payloadcms/plugin-ecommerce/types'
 import {
@@ -53,13 +50,14 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     meta: true,
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
+    { name: 'title',label: 'نام محصول', type: 'text', required: true },
     {
       name: 'price',
+      label: 'قیمت ',
       type: 'number',
       required: true,
       admin: {
-        description: 'قیمت محصول به تومان یا واحد دلخواه شما',
+        description: 'قیمت محصول به تومان',
       },
     },
     {
@@ -79,24 +77,32 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     },
     {
       name: 'isFeatured',
+      label: 'محصل شاخص',
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        description: 'محصول شاخص برای نمایش در صفحه اصلی',
+        description: 'اگر میخواهید محصول مورد نظر درون صفحه اصلی نمایش داده شود انتخاب کنید',
       },
     },
-    {
-      name: 'availableColors',
-      type: 'array',
-      label: 'رنگ‌های موجود',
-      fields: [
-        {
-          name: 'color',
-          type: 'text',
-          required: true,
-        },
-      ],
-    },
+    // {
+    //   name: 'availableColors',
+    //   type: 'array',
+    //   label: 'رنگ‌های موجود',
+    //   fields: [
+    //     {
+    //       name: 'colorName',
+    //       label: 'نام رنگ',
+    //       type: 'text',
+    //       required: true,
+    //     },
+    //     {
+    //       name: 'colorCode',
+    //       label: 'کد رنگ',
+    //       type: 'text',
+    //       required: true,
+    //     },
+    //   ],
+    // },
     {
       type: 'tabs',
       tabs: [
@@ -121,11 +127,13 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             },
             {
               name: 'gallery',
+              label: 'گالری',
               type: 'array',
               minRows: 1,
               fields: [
                 {
                   name: 'image',
+                  label: 'تصویر',
                   type: 'upload',
                   relationTo: 'media',
                   required: true,
@@ -173,19 +181,20 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 },
               ],
             },
-            {
-              name: 'layout',
-              type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock],
-            },
+            // {
+            //   name: 'layout',
+            //   type: 'blocks',
+            //   blocks: [CallToAction, Content, MediaBlock],
+            // },
           ],
-          label: 'Content',
+          label: 'محتوای محصول',
         },
         {
           fields: [
             ...defaultCollection.fields,
             {
               name: 'relatedProducts',
+              label: 'محصولات مرتبط',
               type: 'relationship',
               filterOptions: ({ id }) => {
                 if (id) {
@@ -206,7 +215,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
               relationTo: 'products',
             },
           ],
-          label: 'Product Details',
+          label: 'جزئیات محصول',
         },
         {
           name: 'meta',
@@ -219,11 +228,19 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             }),
             MetaTitleField({
               hasGenerateFn: true,
+              overrides: {
+                label: 'عنوان',
+              },
             }),
             MetaImageField({
               relationTo: 'media',
+              overrides: {
+                label: 'تصویر',
+              }
             }),
-            MetaDescriptionField({}),
+            MetaDescriptionField({overrides: {
+              label: 'توضیحات',
+            }}),
             PreviewField({
               hasGenerateFn: true,
               titlePath: 'meta.title',

@@ -55,7 +55,7 @@ export const ProductItem: React.FC<Props> = ({
     }
   }
 
-  const itemPrice = variant?.priceInUSD || product.priceInUSD
+  const itemPrice = variant?.priceInIRR || product.priceInIRR
   const itemURL = `/products/${product.slug}${variant ? `?variant=${variant.id}` : ''}`
 
   return (
@@ -76,7 +76,9 @@ export const ProductItem: React.FC<Props> = ({
               {product.price}
             </span>
           </div>
-          <div className="text-md font-bold text-card-foreground">{product.price} تومان</div>
+          <div className="text-md font-bold text-card-foreground">
+            {product.discountedPrice} تومان
+          </div>
         </CardDescription>
       </CardHeader>
     </Card>

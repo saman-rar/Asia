@@ -1,14 +1,14 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import {
-    BoldFeature,
-    EXPERIMENTAL_TableFeature,
-    IndentFeature,
-    ItalicFeature,
-    LinkFeature,
-    OrderedListFeature,
-    UnderlineFeature,
-    UnorderedListFeature,
-    lexicalEditor,
+  BoldFeature,
+  EXPERIMENTAL_TableFeature,
+  IndentFeature,
+  ItalicFeature,
+  LinkFeature,
+  OrderedListFeature,
+  UnderlineFeature,
+  UnorderedListFeature,
+  lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -20,12 +20,16 @@ import { Users } from '@/collections/Users'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { Home } from '@/globals/Home'
+import { fa } from './i18n/fa'
 import { plugins } from './plugins'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  i18n: {
+    supportedLanguages: { fa },
+  },
   admin: {
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
