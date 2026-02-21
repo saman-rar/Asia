@@ -50,31 +50,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     meta: true,
   },
   fields: [
-    { name: 'title',label: 'نام محصول', type: 'text', required: true },
-    {
-      name: 'price',
-      label: 'قیمت ',
-      type: 'number',
-      required: true,
-      admin: {
-        description: 'قیمت محصول به تومان',
-      },
-    },
-    {
-      name: 'isOff',
-      type: 'checkbox',
-      label: 'دارای تخفیف',
-      defaultValue: false,
-    },
-    {
-      name: 'discountedPrice',
-      type: 'number',
-      label: 'قیمت با تخفیف',
-      admin: {
-        description: 'فقط زمانی نمایش داده می‌شود که تخفیف فعال باشد',
-        condition: (data) => data?.isOff === true,
-      },
-    },
+    { name: 'title', label: 'نام محصول', type: 'text', required: true },
     {
       name: 'isFeatured',
       label: 'محصل شاخص',
@@ -84,25 +60,6 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         description: 'اگر میخواهید محصول مورد نظر درون صفحه اصلی نمایش داده شود انتخاب کنید',
       },
     },
-    // {
-    //   name: 'availableColors',
-    //   type: 'array',
-    //   label: 'رنگ‌های موجود',
-    //   fields: [
-    //     {
-    //       name: 'colorName',
-    //       label: 'نام رنگ',
-    //       type: 'text',
-    //       required: true,
-    //     },
-    //     {
-    //       name: 'colorCode',
-    //       label: 'کد رنگ',
-    //       type: 'text',
-    //       required: true,
-    //     },
-    //   ],
-    // },
     {
       type: 'tabs',
       tabs: [
@@ -140,6 +97,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 },
                 {
                   name: 'variantOption',
+                  label: 'مرتبط به کدام تنوع',
                   type: 'relationship',
                   relationTo: 'variantOptions',
                   admin: {
@@ -181,17 +139,30 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 },
               ],
             },
-            // {
-            //   name: 'layout',
-            //   type: 'blocks',
-            //   blocks: [CallToAction, Content, MediaBlock],
-            // },
           ],
           label: 'محتوای محصول',
         },
         {
           fields: [
             ...defaultCollection.fields,
+            {
+              name: 'isOff',
+              label: 'دارای تخفیف',
+              type: 'checkbox',
+              admin: {
+                description: 'اگه محصول مورد نظر دارای تخفیف است فعال کنید',
+              },
+              defaultValue: false,
+            },
+            {
+              name: 'discountedPrice',
+              label: 'قمیت نهایی(با تخفیف)',
+              type: 'number',
+              admin: {
+                description: 'اگر تخفیف فعال باشد از این قیمت برای پرداهت نهایی استفاده میشود.',
+                condition: (data) => data.isOff,
+              },
+            },
             {
               name: 'relatedProducts',
               label: 'محصولات مرتبط',
@@ -236,11 +207,13 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
               relationTo: 'media',
               overrides: {
                 label: 'تصویر',
-              }
+              },
             }),
-            MetaDescriptionField({overrides: {
-              label: 'توضیحات',
-            }}),
+            MetaDescriptionField({
+              overrides: {
+                label: 'توضیحات',
+              },
+            }),
             PreviewField({
               hasGenerateFn: true,
               titlePath: 'meta.title',
@@ -250,46 +223,23 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         },
       ],
     },
+    // روابط: هر محصول یک دسته‌بندی و یک برند
     {
-      name: 'categories',
+      name: 'category',
       type: 'relationship',
-      admin: {
-        position: 'sidebar',
-        sortOptions: 'title',
-      },
-      hasMany: true,
       relationTo: 'categories',
-    },
-    // دسته‌بندی اصلی برای کنترل فیلدهای اختصاصی هر گروه
-    {
-      name: 'primaryCategory',
-      type: 'select',
-      label: 'دسته‌بندی اصلی',
+      label: 'دسته‌بندی',
       required: true,
-      options: [
-        { label: 'موبایل', value: 'mobile' },
-        { label: 'اسپیکر', value: 'speaker' },
-        { label: 'ساعت هوشمند', value: 'smart-watch' },
-        { label: 'هندزفری', value: 'handsfree' },
-        { label: 'هدفون / هدست', value: 'headphone' },
-        { label: 'قاب / کاور', value: 'cover' },
-        { label: 'گلس', value: 'glass' },
-        { label: 'سایر', value: 'others' },
-      ],
       admin: {
         position: 'sidebar',
       },
     },
-    // برند مشترک بین همه دسته‌ها
     {
-      name: 'brand',
-      type: 'select',
+      name: 'brandRef',
+      type: 'relationship',
+      relationTo: 'brands',
       label: 'برند',
-      options: [
-        { label: 'اپل', value: 'apple' },
-        { label: 'سامسونگ', value: 'samsung' },
-        { label: 'شیائومی', value: 'xiaomi' },
-      ],
+      required: true,
       admin: {
         position: 'sidebar',
       },
@@ -301,15 +251,18 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
       label: 'حافظه داخلی (موبایل)',
       options: [
         { label: '32 گیگابایت', value: '32' },
-        { label: '64 گیگابایت', value: "64" },
-        { label: '128 گیگابایت', value: "128" },
+        { label: '64 گیگابایت', value: '64' },
+        { label: '128 گیگابایت', value: '128' },
         { label: '256 گیگابایت', value: '256' },
         { label: '512 گیگابایت', value: '512' },
         { label: '1 ترابایت', value: '1024' },
       ],
       admin: {
-        condition: (data) => data?.primaryCategory === 'mobile',
         position: 'sidebar',
+        condition: (data) => {
+          console.log(data.category)
+          return data.category === 4
+        },
       },
     },
     {
@@ -324,7 +277,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         { label: '16 گیگابایت', value: '16' },
       ],
       admin: {
-        condition: (data) => data?.primaryCategory === 'mobile',
+        condition: (data) => data.category === 4,
         position: 'sidebar',
       },
     },
@@ -339,8 +292,8 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         { label: 'خانگی', value: 'home' },
       ],
       admin: {
-        condition: (data) => data?.primaryCategory === 'speaker',
         position: 'sidebar',
+        condition: (data) => data.category === 5,
       },
     },
     // فیلدهای مخصوص هندزفری
@@ -354,8 +307,8 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         { label: 'سیمی', value: 'wire' },
       ],
       admin: {
-        condition: (data) => data?.primaryCategory === 'handsfree',
         position: 'sidebar',
+        condition: (data) => data.category === 7,
       },
     },
     // فیلدهای مخصوص هدفون / هدست
@@ -369,8 +322,8 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         { label: 'دوگانه (بی‌سیم و با سیم)', value: 'both' },
       ],
       admin: {
-        condition: (data) => data?.primaryCategory === 'headphone',
         position: 'sidebar',
+        condition: (data) => data.category === 8,
       },
     },
     {
@@ -382,7 +335,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         { label: 'هدست', value: 'headset' },
       ],
       admin: {
-        condition: (data) => data?.primaryCategory === 'headphone',
+        condition: (data) => data.category === 8,
         position: 'sidebar',
       },
     },
@@ -396,7 +349,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         { label: 'بچه‌گانه و فانتزی', value: 'kids' },
       ],
       admin: {
-        condition: (data) => data?.primaryCategory === 'headphone',
+        condition: (data) => data.category === 8,
         position: 'sidebar',
       },
     },
@@ -410,46 +363,17 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         { label: 'ورزشی', value: 'fit' },
       ],
       admin: {
-        condition: (data) => data?.primaryCategory === 'smart-watch',
         position: 'sidebar',
+        condition: (data) => data.category === 6,
       },
     },
     // فیلدهای مشترک کاور و گلس: برند و مدل گوشی
     {
-      name: 'phoneBrand',
-      type: 'select',
-      label: 'برند گوشی (برای کاور/گلس)',
-      options: [
-        { label: 'اپل', value: 'apple' },
-        { label: 'سامسونگ', value: 'samsung' },
-        { label: 'شیائومی', value: 'xiaomi' },
-      ],
-      admin: {
-        condition: (data) =>
-          data?.primaryCategory === 'cover' || data?.primaryCategory === 'glass',
-        position: 'sidebar',
-      },
-    },
-    {
       name: 'phoneModel',
-      type: 'select',
+      type: 'text',
       label: 'مدل گوشی (برای کاور/گلس)',
-      options: [
-        { label: 'Iphone 6', value: 'iphone-6' },
-        { label: 'Iphone 6s', value: 'iphone-6s' },
-        { label: 'Iphone 6 plus', value: 'iphone-6-plus' },
-        { label: 'Iphone 6s plus', value: 'iphone-6s-plus' },
-        { label: 'A16', value: 'a16' },
-        { label: 'A26', value: 'a26' },
-        { label: 'A36', value: 'a36' },
-        { label: 'A56', value: 'a56' },
-        { label: 'Redmi note 11', value: 'redmi-note-11' },
-        { label: 'Redmi note 11s', value: 'redmi-note-11s' },
-        { label: 'Redmi note 11 pro', value: 'redmi-note-11-pro' },
-      ],
       admin: {
-        condition: (data) =>
-          data?.primaryCategory === 'cover' || data?.primaryCategory === 'glass',
+        condition: (data) => data.category === 10 || data.category === 9,
         position: 'sidebar',
       },
     },

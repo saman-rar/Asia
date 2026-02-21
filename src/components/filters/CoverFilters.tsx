@@ -75,6 +75,8 @@ const brands = [
   },
 ]
 
+interface CoverFiltersProps {}
+
 const CoverFilters = () => {
   const [price, setPrice] = useState([0, 300000000])
   return (

@@ -1,38 +1,30 @@
 import type { CollectionConfig } from 'payload'
-import { slugField } from 'payload'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
+  labels: {
+    singular: 'دسته بندی',
+    plural: 'دسته بندی‌ها',
+  },
   access: {
     read: () => true,
   },
   admin: {
-    useAsTitle: 'title',
+    useAsTitle: 'label',
     group: 'Content',
   },
   fields: [
     {
-      name: 'title',
+      name: 'label',
+      label: 'نام دسته بندی',
       type: 'text',
       required: true,
     },
     {
-      name: 'description',
+      name: 'name',
+      label: 'شناسه انگلیسی',
       type: 'text',
+      required: true,
     },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
-      name: 'isFeatured',
-      type: 'checkbox',
-      label: 'Featured Category',
-      defaultValue: false,
-    },
-    slugField({
-      position: undefined,
-    }),
   ],
 }

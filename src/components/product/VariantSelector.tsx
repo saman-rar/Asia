@@ -76,14 +76,9 @@ export function VariantSelector({ product }: { product: Product }) {
                   })
 
                 if (matchingVariant) {
-                  // If we found a matching variant, set the variant ID in the search params.
                   optionSearchParams.set('variant', String(matchingVariant.id))
-
-                  if (matchingVariant.inventory && matchingVariant.inventory > 0) {
-                    isAvailableForSale = true
-                  } else {
-                    isAvailableForSale = false
-                  }
+                  // For now, always allow selection; we’ll handle stock in AddToCart
+                  isAvailableForSale = true
                 }
               }
 
@@ -93,7 +88,35 @@ export function VariantSelector({ product }: { product: Product }) {
               const isActive =
                 Boolean(isAvailableForSale) &&
                 searchParams.get(optionKeyLowerCase) === String(optionID)
-
+              if (type.name === 'color') {
+                return (
+                  <Button
+                    variant={'ghost'}
+                    aria-disabled={!isAvailableForSale}
+                    className={clsx('px-3 py-5.5 text-muted-foreground hover:text-foreground', {
+                      'bg-primary/5 text-foreground': isActive,
+                    })}
+                    disabled={!isAvailableForSale}
+                    key={option.id}
+                    onClick={() => {
+                      router.replace(`${optionUrl}`, {
+                        scroll: false,
+                      })
+                    }}
+                    title={`${option.label} ${!isAvailableForSale ? ' (Out of Stock)' : ''}`}
+                  >
+                    <div
+                      className={clsx(`w-6 h-6 rounded-full`, {
+                        'ring-2 ring-offset-2 ring-offset-background': isActive,
+                      })}
+                      style={{
+                        backgroundColor: option.value,
+                      }}
+                    />
+                    <span>{option.label}</span>
+                  </Button>
+                )
+              }
               return (
                 <Button
                   variant={'ghost'}

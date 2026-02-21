@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,12 +19,12 @@ const MyBreadcrumb = ({ links }: BreadcrumbProps) => {
     <Breadcrumb>
       <BreadcrumbList>
         {links.map((link, i) => (
-          <>
-            <BreadcrumbItem key={i}>
+          <React.Fragment key={i}>
+            <BreadcrumbItem>
               <BreadcrumbLink href={link.href}>{link.title}</BreadcrumbLink>
             </BreadcrumbItem>
             {links.length - 1 !== i && <BreadcrumbSeparator />}
-          </>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

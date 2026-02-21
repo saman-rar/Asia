@@ -17,6 +17,15 @@ export const Providers: React.FC<{
         <HeaderThemeProvider>
           <SonnerProvider />
           <EcommerceProvider
+          currenciesConfig={{
+            defaultCurrency: 'IRR',
+            supportedCurrencies: [{
+              code: 'IRR',
+              decimals: 0,
+              label: 'تومان',
+              symbol: 'تومان',
+            }]
+          }}
             enableVariants={true}
             api={{
               cartsFetchQuery: {

@@ -12,8 +12,6 @@ export default async function ProductsCarousel() {
     collection: 'products',
   })
 
-  console.log(docs)
-
   return (
     <ScrollArea className="w-full rounded-md whitespace-nowrap">
       <div className="flex w-max space-x-1 py-6">

@@ -1,14 +1,16 @@
 'use client'
 import type { Product, Variant } from '@/payload-types'
 
-import { RichText } from '@/components/RichText'
 import { AddToCart } from '@/components/Cart/AddToCart'
-import { Price } from '@/components/Price'
-import React, { Suspense } from 'react'
+import { RichText } from '@/components/RichText'
+import { Suspense } from 'react'
 
-import { VariantSelector } from './VariantSelector'
-import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
 import { StockIndicator } from '@/components/product/StockIndicator'
+import { getFaNumber } from '@/lib/utils'
+import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
+import { Price } from '../Price'
+import { Badge } from '../ui/badge'
+import { VariantSelector } from './VariantSelector'
 
 export function ProductDescription({ product }: { product: Product }) {
   const { currency } = useCurrency()
@@ -51,15 +53,31 @@ export function ProductDescription({ product }: { product: Product }) {
     amount = product[priceField]
   }
 
+  console.log(product.priceInIRR)
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-medium">{product.title}</h1>
         <div className="uppercase font-mono">
-          {hasVariants ? (
-            <Price highestAmount={highestAmount} lowestAmount={lowestAmount} />
+          {product.isOff ? (
+            <div className="space-y-2">
+              <div className="space-x-1.5">
+                <Badge className="bg-primary-light text-white">
+                  {getFaNumber(
+                    ((product.discountedPrice as number) / (product.priceInIRR as number)) * 100,
+                  )}
+                  %
+                </Badge>
+                <Price
+                  amount={product.priceInIRR as number}
+                  className="text-muted-foreground line-through"
+                />
+              </div>
+              <Price amount={product.discountedPrice as number} className="text-xl font-semibold" />
+            </div>
           ) : (
-            <Price amount={amount} />
+            <Price amount={product.priceInIRR as number} className="text-xl font-semibold" />
           )}
         </div>
       </div>
@@ -82,7 +100,7 @@ export function ProductDescription({ product }: { product: Product }) {
         </Suspense>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="w-full">
         <Suspense fallback={null}>
           <AddToCart product={product} />
         </Suspense>

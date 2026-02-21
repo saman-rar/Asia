@@ -11,35 +11,26 @@ export const CarouselBlock: React.FC<
     id?: DefaultDocumentIDType
   }
 > = async (props) => {
-  const { id, categories, limit = 3, populateBy, selectedDocs } = props
+  const { id, limit = 3, populateBy, selectedDocs } = props
 
   let products: Product[] = []
 
   if (populateBy === 'collection') {
     const payload = await getPayload({ config: configPromise })
 
-    const flattenedCategories = categories?.length
-      ? categories.map((category) => {
-          if (typeof category === 'object') return category.id
-          else return category
+    switch (populateBy) {
+      case 'collection': {
+        const productsQuery = await payload.find({
+          collection: 'products',
+          depth: 1,
+          limit,
         })
-      : null
 
-    const fetchedProducts = await payload.find({
-      collection: 'products',
-      depth: 1,
-      limit: limit || undefined,
-      ...(flattenedCategories && flattenedCategories.length > 0
-        ? {
-            where: {
-              categories: {
-                in: flattenedCategories,
-              },
-            },
-          }
-        : {}),
-    })
+        products = productsQuery.docs
 
+        break
+      }
+    }
     products = fetchedProducts.docs
   } else if (selectedDocs?.length) {
     products = selectedDocs.map((post) => {

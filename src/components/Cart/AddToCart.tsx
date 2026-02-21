@@ -81,7 +81,6 @@ export function AddToCart({ product }: Props) {
       if (!selectedVariant) {
         return true
       }
-
       if (selectedVariant.inventory === 0) {
         return true
       }
@@ -96,16 +95,15 @@ export function AddToCart({ product }: Props) {
 
   return (
     <Button
-      aria-label="Add to cart"
-      variant={'outline'}
-      className={clsx({
-        'hover:opacity-90': true,
-      })}
+      aria-label="افزودن به سبد خرید"
+      className={clsx(
+        'w-full bg-primary-light dark:hover:bg-primary-light/80 py-6 px-10 text-lg text-white',
+      )}
       disabled={disabled || isLoading}
       onClick={addToCart}
       type="submit"
     >
-      Add To Cart
+      افزودن به سبد خرید
     </Button>
   )
 }

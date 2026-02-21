@@ -1,16 +1,24 @@
 import FeatuedBrands from '@/components/FeatuedBrands'
 import HeroCarousel from '@/components/HeroCarousel'
+import HomeGridItem from '@/components/HomeGridItem'
 import ProductsCarousel from '@/components/product/ProductsCarousel'
+import configPromise from '@payload-config'
 import { ChevronLeft, Percent } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
+import { getPayload } from 'payload'
 
 export default async function HomePage() {
+  const payload = await getPayload({ config: configPromise })
+
+  const home = await payload.findGlobal({
+    slug: 'home',
+  })
+
   return (
-    <article className="pt-16 pb-24 space-y-7">
+    <article className="pt-0 lg:pt-10 pb-24 space-y-7">
       {/* Carousel */}
       <div className="w-full">
-        <HeroCarousel />
+        <HeroCarousel slides={home.heroSlides} />
       </div>
 
       {/* Special Offer */}
@@ -39,23 +47,14 @@ export default async function HomePage() {
       </div>
 
       {/* Products Grid 2*2*/}
-      <div className="grid grid-cols-2 grid-rows-2 gap-5 w-full aspect-2/1 container">
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-5 w-full container">
+        {home.promoGrid2x2?.map((item) => (
+          <HomeGridItem item={item} key={item.id} aspect="aspect-video" />
+        ))}
       </div>
 
       {/* Featured Brands */}
-      <div className="container">
+      <div className="lg:container">
         <FeatuedBrands />
       </div>
 
@@ -132,19 +131,10 @@ export default async function HomePage() {
       </div>
 
       {/* Products Grid 2*1*/}
-      <div className="grid grid-cols-4 gap-5 aspect-video h-50 container">
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
-        <div className="relative rounded-2xl overflow-hidden">
-          <Image src="/grid.png" fill alt="grid" className="object-cover" />
-        </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 w-full container">
+        {home.promoGrid2x2?.map((item) => (
+          <HomeGridItem item={item} key={item.id} aspect="aspect-square" />
+        ))}
       </div>
 
       {/* Best sellers */}

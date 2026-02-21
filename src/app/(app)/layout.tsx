@@ -2,12 +2,14 @@ import type { ReactNode } from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
 import { Footer } from '@/components/Footer'
-import { Header } from '@/components/Header'
+import { HeaderClient } from '@/components/Header/index.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { cn } from '@/utilities/cn'
+import configPromise from '@payload-config'
 import { Vazirmatn } from 'next/font/google'
+import { getPayload } from 'payload'
 import './globals.css'
 
 /* const { SITE_NAME, TWITTER_CREATOR, TWITTER_SITE } = process.env
@@ -44,6 +46,12 @@ const vazir = Vazirmatn({
 })
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  const payload = await getPayload({ config: configPromise })
+  const { docs: categories } = await payload.find({
+    collection: 'categories',
+    sort: 'id',
+  })
+
   return (
     <html className={cn('h-full', vazir.className)} lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
@@ -56,7 +64,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <AdminBar />
           <LivePreviewListener />
 
-          <Header />
+          <HeaderClient categories={categories} />
           <main>{children}</main>
           <Footer />
         </Providers>

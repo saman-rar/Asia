@@ -17,54 +17,7 @@ export type OrderStatus = ('processing' | 'completed' | 'cancelled' | 'refunded'
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "supportedTimezones".
  */
-export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
-  | 'Europe/London'
-  | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+export type SupportedTimezones = 'Asia/Tehran';
 
 export interface Config {
   auth: {
@@ -73,8 +26,9 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    categories: Category;
     media: Media;
+    brands: Brand;
+    categories: Category;
     forms: Form;
     'form-submissions': FormSubmission;
     addresses: Address;
@@ -105,8 +59,9 @@ export interface Config {
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    brands: BrandsSelect<false> | BrandsSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
@@ -263,15 +218,6 @@ export interface Product {
   id: number;
   title: string;
   /**
-   * قیمت محصول به تومان
-   */
-  price: number;
-  isOff?: boolean | null;
-  /**
-   * فقط زمانی نمایش داده می‌شود که تخفیف فعال باشد
-   */
-  discountedPrice?: number | null;
-  /**
    * اگر میخواهید محصول مورد نظر درون صفحه اصلی نمایش داده شود انتخاب کنید
    */
   isFeatured?: boolean | null;
@@ -307,6 +253,14 @@ export interface Product {
   };
   priceInIRREnabled?: boolean | null;
   priceInIRR?: number | null;
+  /**
+   * اگه محصول مورد نظر دارای تخفیف است فعال کنید
+   */
+  isOff?: boolean | null;
+  /**
+   * اگر تخفیف فعال باشد از این قیمت برای پرداهت نهایی استفاده میشود.
+   */
+  discountedPrice?: number | null;
   relatedProducts?: (number | Product)[] | null;
   meta?: {
     title?: string | null;
@@ -316,9 +270,8 @@ export interface Product {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  categories?: (number | Category)[] | null;
-  primaryCategory: 'mobile' | 'speaker' | 'smart-watch' | 'handsfree' | 'headphone' | 'cover' | 'glass' | 'others';
-  brand?: ('apple' | 'samsung' | 'xiaomi') | null;
+  category: number | Category;
+  brandRef: number | Brand;
   mobileStorage?: ('32' | '64' | '128' | '256' | '512' | '1024') | null;
   mobileRam?: ('4' | '6' | '8' | '12' | '16') | null;
   speakerType?: ('desktop' | 'portable' | 'home') | null;
@@ -327,22 +280,7 @@ export interface Product {
   headphoneType?: ('headphone' | 'headset') | null;
   headphoneUserType?: ('gaming' | 'normal' | 'kids') | null;
   smartWatchType?: ('smart' | 'fit') | null;
-  phoneBrand?: ('apple' | 'samsung' | 'xiaomi') | null;
-  phoneModel?:
-    | (
-        | 'iphone-6'
-        | 'iphone-6s'
-        | 'iphone-6-plus'
-        | 'iphone-6s-plus'
-        | 'a16'
-        | 'a26'
-        | 'a36'
-        | 'a56'
-        | 'redmi-note-11'
-        | 'redmi-note-11s'
-        | 'redmi-note-11-pro'
-      )
-    | null;
+  phoneModel?: string | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -437,16 +375,11 @@ export interface Variant {
   priceInIRREnabled?: boolean | null;
   priceInIRR?: number | null;
   /**
-   * اگر این تنوع قیمت متفاوتی با قیمت اصلی دارد فعال کنید اگرنه قیمت اصلی برای این تنوع اعمال خواهد شد
+   * اگه محصول مورد نظر دارای تخفیف است فعال کنید
    */
-  enablePrice?: boolean | null;
-  /**
-   * قیمت این تنوع محصول به تومان
-   */
-  price?: number | null;
   isOff?: boolean | null;
   /**
-   * فقط زمانی نمایش داده می‌شود که این تنوع تخفیف داشته باشد
+   * اگر تخفیف فعال باشد از این قیمت برای پرداهت نهایی استفاده میشود.
    */
   discountedPrice?: number | null;
   updatedAt: string;
@@ -460,15 +393,27 @@ export interface Variant {
  */
 export interface Category {
   id: number;
-  title: string;
-  description?: string | null;
-  image?: (number | null) | Media;
+  label: string;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands".
+ */
+export interface Brand {
+  id: number;
+  label: string;
+  name: string;
   isFeatured?: boolean | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
   slug: string;
+  icon?: (number | null) | Media;
+  categories?: (number | Category)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -818,12 +763,16 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'categories';
-        value: number | Category;
-      } | null)
-    | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'brands';
+        value: number | Brand;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
       } | null)
     | ({
         relationTo: 'forms';
@@ -936,20 +885,6 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  image?: T;
-  isFeatured?: T;
-  generateSlug?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -966,6 +901,31 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands_select".
+ */
+export interface BrandsSelect<T extends boolean = true> {
+  label?: T;
+  name?: T;
+  isFeatured?: T;
+  generateSlug?: T;
+  slug?: T;
+  icon?: T;
+  categories?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  label?: T;
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1147,8 +1107,6 @@ export interface VariantsSelect<T extends boolean = true> {
   inventory?: T;
   priceInIRREnabled?: T;
   priceInIRR?: T;
-  enablePrice?: T;
-  price?: T;
   isOff?: T;
   discountedPrice?: T;
   updatedAt?: T;
@@ -1187,9 +1145,6 @@ export interface VariantOptionsSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
-  price?: T;
-  isOff?: T;
-  discountedPrice?: T;
   isFeatured?: T;
   description?: T;
   gallery?:
@@ -1205,6 +1160,8 @@ export interface ProductsSelect<T extends boolean = true> {
   variants?: T;
   priceInIRREnabled?: T;
   priceInIRR?: T;
+  isOff?: T;
+  discountedPrice?: T;
   relatedProducts?: T;
   meta?:
     | T
@@ -1213,9 +1170,8 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
-  categories?: T;
-  primaryCategory?: T;
-  brand?: T;
+  category?: T;
+  brandRef?: T;
   mobileStorage?: T;
   mobileRam?: T;
   speakerType?: T;
@@ -1224,7 +1180,6 @@ export interface ProductsSelect<T extends boolean = true> {
   headphoneType?: T;
   headphoneUserType?: T;
   smartWatchType?: T;
-  phoneBrand?: T;
   phoneModel?: T;
   generateSlug?: T;
   slug?: T;
@@ -1388,15 +1343,10 @@ export interface Header {
         link: {
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'categories';
-                value: number | Category;
-              } | null)
-            | ({
-                relationTo: 'products';
-                value: number | Product;
-              } | null);
+          reference?: {
+            relationTo: 'products';
+            value: number | Product;
+          } | null;
           url?: string | null;
           label: string;
         };
@@ -1417,15 +1367,10 @@ export interface Footer {
         link: {
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'categories';
-                value: number | Category;
-              } | null)
-            | ({
-                relationTo: 'products';
-                value: number | Product;
-              } | null);
+          reference?: {
+            relationTo: 'products';
+            value: number | Product;
+          } | null;
           url?: string | null;
           label: string;
         };

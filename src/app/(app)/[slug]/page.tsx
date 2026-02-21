@@ -1,12 +1,15 @@
 import MyBreadcrumb from '@/components/Breadcrumb'
 import CoverFilters from '@/components/filters/CoverFilters'
+import DefaultFilters from '@/components/filters/DefaultFilters'
 import GlassFilters from '@/components/filters/GlassFilters'
 import HandsfreeFilters from '@/components/filters/HandsfreeFilters'
 import HeadphoneFilters from '@/components/filters/HeadphoneFilters'
 import MobileFilters from '@/components/filters/MobileFilters'
+import ProductsFilters from '@/components/filters/ProductsFilters'
 import SmartWatchFilters from '@/components/filters/SmartWatchFilters'
 import SpeakerFilters from '@/components/filters/SpeakerFilters'
 import { ProductItem } from '@/components/ProductItem'
+import { Brand } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { SortDesc } from 'lucide-react'
@@ -34,32 +37,49 @@ const sort = [
   },
 ]
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+interface PageProps {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ q: string }>
+}
 
-  if (slug === 'home') {
-    redirect('/')
+export default async function Page({ params, searchParams }: PageProps) {
+  const { slug } = await params
+  const { q } = await searchParams
+
+  const payload = await getPayload({ config: configPromise })
+
+  const { docs: categories } = await payload.find({
+    collection: 'categories',
+    sort: 'id',
+  })
+
+  const categoryId = categories.find((category) => category.name === slug)?.id
+
+  let brands: Brand[]
+  if (slug === 'products') {
+    const { docs } = await payload.find({
+      collection: 'brands',
+    })
+
+    brands = docs
+  } else {
+    const { docs } = await payload.find({
+      collection: 'brands',
+      where: {
+        categories: {
+          contains: categoryId || 0,
+        },
+      },
+    })
+
+    brands = docs
   }
 
-  let collection:
-    | 'users'
-    | 'pages'
-    | 'categories'
-    | 'media'
-    | 'forms'
-    | 'form-submissions'
-    | 'addresses'
-    | 'variants'
-    | 'variantTypes'
-    | 'variantOptions'
-    | 'products'
-    | 'carts'
-    | 'orders'
-    | 'transactions'
-    | 'payload-kv'
-    | 'payload-locked-documents'
-    | 'payload-preferences'
-    | 'payload-migrations' = 'products'
+  if (slug === 'home') {
+    if (!q) {
+      return redirect('/')
+    }
+  }
 
   let breadCrumb: {
     title: string
@@ -71,70 +91,58 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   let title: string = 'فروشگاه آسیا'
 
-  let Filter: JSX.Element = <></>
+  let Filter: JSX.Element = <DefaultFilters />
 
-  if (slug === 'mobile') {
-    collection = 'products'
+  if (slug === 'products') {
+    breadCrumb = {
+      title: 'محصولات',
+      href: '/products',
+    }
+    title = 'محصولات'
+    Filter = <ProductsFilters categories={categories} brands={brands} />
+  } else if (slug === 'mobile') {
     breadCrumb = {
       title: 'موبایل',
       href: '/mobile',
     }
     title = 'گوشی موبایل'
-    Filter = <MobileFilters />
-  }
-
-  if (slug === 'speaker') {
-    collection = 'products'
+    Filter = <MobileFilters brands={brands} />
+  } else if (slug === 'speaker') {
     breadCrumb = {
       title: 'اسپیکر',
       href: '/speaker',
     }
     title = 'اسپیکر (بلندگو)'
-    Filter = <SpeakerFilters />
-  }
-
-  if (slug === 'smart-watch') {
-    collection = 'products'
+    Filter = <SpeakerFilters brands={brands} />
+  } else if (slug === 'smart-watch') {
     breadCrumb = {
       title: 'ساعت هوشمند',
       href: '/smart-watch',
     }
     title = 'ساعت هوشمند'
-    Filter = <SmartWatchFilters />
-  }
-
-  if (slug === 'handsfree') {
-    collection = 'products'
+    Filter = <SmartWatchFilters brands={brands} />
+  } else if (slug === 'handsfree') {
     breadCrumb = {
       title: 'هندزفری',
       href: '/handsfree',
     }
     title = 'هندزفری سیمی و بلوتوثی'
-    Filter = <HandsfreeFilters />
-  }
-
-  if (slug === 'headphone') {
-    collection = 'products'
+    Filter = <HandsfreeFilters brands={brands} />
+  } else if (slug === 'headphone') {
     breadCrumb = {
       title: 'هدفون و هدست',
       href: '/headphone',
     }
     title = 'هدفون و هدست'
-    Filter = <HeadphoneFilters />
-  }
-
-  if (slug === 'cover') {
-    collection = 'products'
+    Filter = <HeadphoneFilters brands={brands} />
+  } else if (slug === 'cover') {
     breadCrumb = {
       title: 'قاب و کاور گوشی',
       href: '/cover',
     }
     title = 'قاب محافظ و کاور گوشی'
     Filter = <CoverFilters />
-  }
-
-  if (slug === 'glass') {
-    collection = 'products'
+  } else if (slug === 'glass') {
     breadCrumb = {
       title: 'گلس گوشی',
       href: '/glass',
@@ -143,17 +151,38 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     Filter = <GlassFilters />
   }
 
-  const payload = await getPayload({ config: configPromise })
-  const { docs } = await payload.find({
-    collection,
+  let where: any = {}
+
+  if (q) {
+    where = {
+      ...where,
+      title: {
+        like: q,
+      },
+    }
+  }
+
+  if (slug !== 'products') {
+    where = {
+      ...where,
+      category: {
+        equals: categoryId || 0,
+      },
+    }
+  }
+
+  const { docs: products } = await payload.find({
+    collection: 'products',
+    where,
   })
+
   return (
     <article className="pt-16 pb-24 space-y-7 container">
       {/* Breadcrumb */}
       <MyBreadcrumb links={[{ title: 'فروشگاه آسیا', href: '/' }, breadCrumb]} />
 
       {/* Page Title */}
-      <h1>{title}</h1>
+      <h1>{q || title}</h1>
 
       {/* Main */}
       <div className="flex w-full">
@@ -178,7 +207,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
           {/* Products Grid */}
           <div className="grid grid-cols-4 gap-3 py-4 px-10">
-            {docs.map((product) => (
+            {products.map((product) => (
               <ProductItem product={product} key={product.id} />
             ))}
           </div>

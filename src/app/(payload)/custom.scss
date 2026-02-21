@@ -8,3 +8,12 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+a.step-nav__home {
+  width: 25px;
+}
+
+ul.query-inspector__json-children,
+ul.query-inspector__json-children--nested {
+  direction: ltr;
+}

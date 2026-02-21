@@ -1,6 +1,8 @@
 import { Media } from '@/components/Media'
-import { cn } from '@/lib/utils'
+import { cn, getFaNumber } from '@/lib/utils'
 import { Product, Variant } from '@/payload-types'
+import Link from 'next/link'
+import { Price } from '../Price'
 import { Badge } from '../ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card'
 
@@ -16,16 +18,7 @@ type Props = {
   currencyCode?: string
 }
 
-export const ProductItem: React.FC<Props> = ({
-  product,
-  style = 'default',
-  quantity,
-  variant,
-  currencyCode,
-  className,
-}) => {
-  const { title } = product
-
+export const ProductItem: React.FC<Props> = ({ product, variant, className }) => {
   const metaImage =
     product.meta?.image && typeof product.meta?.image !== 'string' ? product.meta.image : undefined
 
@@ -55,32 +48,38 @@ export const ProductItem: React.FC<Props> = ({
     }
   }
 
-  const itemPrice = variant?.priceInIRR || product.priceInIRR
-  const itemURL = `/products/${product.slug}${variant ? `?variant=${variant.id}` : ''}`
-
   return (
-    <Card className={cn('pt-0 pb-1 px-0 overflow-hidden', className)}>
-      <div className="flex items-stretch justify-stretch h-30 aspect-square">
-        <div className="relative w-full h-full">
-          {image && typeof image !== 'string' && (
-            <Media className="" fill imgClassName="object-cover" resource={image} />
-          )}
+    <Link href={`/products/${product.slug}`}>
+      <Card className={cn('pt-0 pb-3 px-0 overflow-hidden', className)}>
+        <div className="flex items-stretch justify-stretch h-40 w-full">
+          <div className="relative w-full h-full">
+            {image && typeof image !== 'string' && (
+              <Media className="" fill imgClassName="object-cover" resource={image} />
+            )}
+          </div>
         </div>
-      </div>
-      <CardHeader className="px-2">
-        <CardTitle className="text-sm">{product.meta?.title}</CardTitle>
-        <CardDescription className="space-y-2">
-          <div className="flex items-center gap-1">
-            <Badge className="bg-blue-600 text-white flex pt-1.5">50%</Badge>
-            <span className="text-muted-foreground text-xs line-through pt-1.5">
-              {product.price}
-            </span>
-          </div>
-          <div className="text-md font-bold text-card-foreground">
-            {product.discountedPrice} تومان
-          </div>
-        </CardDescription>
-      </CardHeader>
-    </Card>
+        <CardHeader className="px-2">
+          <CardTitle className="text-sm">{product.meta?.title}</CardTitle>
+          <CardDescription className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Badge className="bg-blue-600 text-white flex pt-1.5">
+                {getFaNumber(
+                  ((product.discountedPrice as number) / (product.priceInIRR as number)) * 100,
+                )}
+                %
+              </Badge>
+              <Price
+                amount={product.priceInIRR as number}
+                className="text-muted-foreground text-xs line-through pt-1.5"
+              />
+            </div>
+            <Price
+              amount={product.discountedPrice as number}
+              className="text-md font-bold text-card-foreground"
+            />
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    </Link>
   )
 }

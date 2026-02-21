@@ -1,14 +1,28 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { Media as MediaType } from '@/payload-types'
 import Autoplay from 'embla-carousel-autoplay'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import Image from 'next/image'
 import { useState } from 'react'
+import { Media } from './Media'
 import { Button } from './ui/button'
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from './ui/carousel'
 
-const HeroCarousel = () => {
+interface HeroCarouselProps {
+  slides:
+    | {
+        image: number | MediaType
+        title?: string | null
+        subtitle?: string | null
+        link?: string | null
+        id?: string | null
+      }[]
+    | null
+    | undefined
+}
+
+const HeroCarousel = ({ slides }: HeroCarouselProps) => {
   const [api, setApi] = useState<CarouselApi>(undefined)
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -38,18 +52,17 @@ const HeroCarousel = () => {
         }}
       >
         <CarouselContent>
-          <CarouselItem className="relative w-full h-50">
-            <Image src="/grid.png" fill alt="grid" />
-          </CarouselItem>
-          <CarouselItem className="relative w-full h-50">
-            <Image src="/grid.png" fill alt="grid" />
-          </CarouselItem>
-          <CarouselItem className="relative w-full h-50">
-            <Image src="/grid.png" fill alt="grid" />
-          </CarouselItem>
-          <CarouselItem className="relative w-full h-50">
-            <Image src="/grid.png" fill alt="grid" />
-          </CarouselItem>
+          {slides?.map((slide) => (
+            <CarouselItem key={slide.id} className="relative w-full h-65">
+              <Media
+                resource={slide.image}
+                className="relative h-full w-full object-cover"
+                imgClassName="h-full w-full object-cover"
+                priority
+              />
+              {/* <GridTileImage media={slide.image} /> */}
+            </CarouselItem>
+          ))}
         </CarouselContent>
         <div className="absolute bottom-7 start-15 space-x-1.5">
           <Button
@@ -76,7 +89,7 @@ const HeroCarousel = () => {
               key={i}
               onClick={() => api?.scrollTo(i)}
               className={cn('h-3 w-3 rounded-full transition-all bg-card-foreground', {
-                'bg-card w-5': i === current,
+                'bg-background w-5': i === current,
               })}
             />
           ))}

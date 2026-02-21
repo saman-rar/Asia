@@ -3,29 +3,13 @@
 import { Accordion } from '@/components/ui/accordion'
 import { Brand } from '@/payload-types'
 import AccordionBrandsItem from './AccordionBrandsItem'
-import AccordionFilterItem from './AccordionFilterItem'
 import AccordionPriceItem from './AccordionPriceItem'
 
-const type = [
-  {
-    label: 'رومیزی',
-    value: 'desktop',
-  },
-  {
-    label: 'قابل حمل',
-    value: 'portable',
-  },
-  {
-    label: 'خانگی',
-    value: 'home',
-  },
-]
-
-interface SpeakerFiltersProps {
+interface DefaultFiltersProps {
   brands: Brand[]
 }
 
-const SpeakerFilters = ({ brands }: SpeakerFiltersProps) => {
+const DefaultFilters = ({ brands }: DefaultFiltersProps) => {
   return (
     <div className="border rounded-lg p-5 w-full">
       <div className="flex justify-between items-center">
@@ -35,15 +19,12 @@ const SpeakerFilters = ({ brands }: SpeakerFiltersProps) => {
 
       <Accordion type="single" collapsible>
         {/* Price */}
-        <AccordionPriceItem maxPrice={100000000} />
+        <AccordionPriceItem maxPrice={300000000} />
 
         {/* Brand */}
         <AccordionBrandsItem brands={brands} />
-
-        {/* Type */}
-        <AccordionFilterItem name="type" title="نوع اسپیکر" items={type} />
       </Accordion>
     </div>
   )
 }
-export default SpeakerFilters
+export default DefaultFilters

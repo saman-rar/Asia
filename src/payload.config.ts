@@ -14,6 +14,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { Brands } from '@/collections/Brands'
 import { Categories } from '@/collections/Categories'
 import { Media } from '@/collections/Media'
 import { Users } from '@/collections/Users'
@@ -32,16 +33,21 @@ export default buildConfig({
   },
   admin: {
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
-      beforeLogin: ['@/components/BeforeLogin#BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
-      beforeDashboard: ['@/components/BeforeDashboard#BeforeDashboard'],
+      graphics: {
+        Icon: '@/components/Admin/AdminLogo',
+        Logo: '@/components/Admin/AdminLogo',
+      },
     },
     user: Users.slug,
+    timezones: {
+      defaultTimezone: 'Asia/Tehran',
+      supportedTimezones: [{
+        label: 'Tehran (UTC+3:30)',
+        value: 'Asia/Tehran'
+      }],
+    },
   },
-  collections: [Users, Categories, Media],
+  collections: [Users, Media, Brands, Categories],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
@@ -56,7 +62,7 @@ export default buildConfig({
         OrderedListFeature(),
         UnorderedListFeature(),
         LinkFeature({
-          enabledCollections: ['categories', 'products'],
+          enabledCollections: ['products'],
           fields: ({ defaultFields }) => {
             const defaultFieldsWithoutUrl = defaultFields.filter((field) => {
               if ('name' in field && field.name === 'url') return false
